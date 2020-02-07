@@ -5,7 +5,7 @@
 pwd
 
 while true; do
-    select data in 'List tables' 'Create tables' 'insert' 'exit'
+    select data in 'List tables' 'Create tables' 'insert' 'delete' 'select' 'exit'
     do
         case $data in
             'List tables')
@@ -24,7 +24,16 @@ while true; do
                 insertIntoTable
                 break;
             ;;
-            
+            'delete')
+   	       . "deleteTable.sh"
+               deleteFromTable
+               break;
+            ;;
+	    'select')
+               . "selectTable.sh"
+               selectFromTable
+               break;
+            ;;
             'exit')
                 break 2;
             ;;
