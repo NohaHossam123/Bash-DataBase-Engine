@@ -30,7 +30,7 @@ function connectToDataBase {
     then
         export dataBaseName
         export databases
-        . ./s2.sh
+        . ./secondMenu.sh
     else
         echo "database not found please try again..."
     fi
