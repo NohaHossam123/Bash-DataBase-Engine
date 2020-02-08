@@ -9,8 +9,13 @@ while true; do
     do
         case $data in
             'List tables')
-                echo "you choosed list tables"
-                ls -I "*.metadata" $databases/$dataBaseName
+		if [ "$(ls -A $databases/$dataBaseName)" ]
+		then
+		   echo "you choosed list tables"
+                   ls -I "*.metadata" $databases/$dataBaseName
+		else
+		  echo "there aren't any tables to show......"
+		fi
                 break;
             ;;
             
