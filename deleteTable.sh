@@ -3,7 +3,7 @@ function deleteFromTable {
 	read tableName
 	if [ -z $tableName ]
 	then
-	  echo "you must to enter name of table"
+	  echo "no enter table to delete....."
 	else
 	if [[ -f "$databases/$dataBaseName/$tableName" ]]
 	then
