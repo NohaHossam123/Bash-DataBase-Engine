@@ -52,11 +52,11 @@ function deleteFromTableByValue {
                 read -e value
                 if  [[ "$value" =~ ^[0-9]+$ ]] && [[ $coulmnDataType == "number" ]]
                 then
-                    newData=`awk -F, '{ if ($'$colIndex' !~ /'$value'/) print $0}' $databases/$dataBaseName/$tableName`
+                    newData=`awk -F, '{ if ($'$colIndex' !~ /^'$value'$/) print $0}' $databases/$dataBaseName/$tableName`
                     echo "$newData" > $databases/$dataBaseName/$tableName
                 elif [[ "$value" =~ ^[a-zA-Z0-9]+$ ]] && [[ $coulmnDataType == "string" ]]
                 then
-                    newData=`awk -F, '{ if ($'$colIndex' !~ /'$value'/) print $0}' $databases/$dataBaseName/$tableName`
+                    newData=`awk -F, '{ if ($'$colIndex' !~ /^'$value'$/) print $0}' $databases/$dataBaseName/$tableName`
                     echo "$newData" > $databases/$dataBaseName/$tableName
                 else
                     echo "the value you entered does not match the coulmn datatype..."
@@ -66,7 +66,7 @@ function deleteFromTableByValue {
                 echo "coulmn does not exist..."
             fi
         fi
-        colIndex=$(awk  -F, ' { if($1~/'$col'/) print NR-1} ' $databases/$dataBaseName/$tableName.metadata)
+        colIndex=$(awk  -F, ' { if($1~/^'$col'$/) print NR-1} ' $databases/$dataBaseName/$tableName.metadata)
         
     else
         echo "table does not exist..."
