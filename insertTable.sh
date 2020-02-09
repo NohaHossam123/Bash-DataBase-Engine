@@ -5,7 +5,7 @@ function insertIntoTable {
     if [[ -f "$databases/$dataBaseName/$tableName" ]]
     then
         numOfCoulmns=`head -n1 $databases/$dataBaseName/$tableName.metadata  | cut -d, -f2`
-        echo "number of coulmns = $numOfCoulmns"
+        #echo "number of coulmns = $numOfCoulmns"
         curruntCoulmnValue=""
         insertFlag=1
         for ((i=2; i <= $numOfCoulmns+1; i++)) do
@@ -13,12 +13,16 @@ function insertIntoTable {
             coulmnDataType=`sed -n "$i"p $databases/$dataBaseName/$tableName.metadata  | cut -d, -f2`
             echo "enter the value of $curruntCoulmn"
             read curruntValue
-            if  [[ "$curruntValue" =~ ^[0-9]+$ ]] && [[ $coulmnDataType == "number" ]]
+            if [[ "$curruntValue" =~ [,] ]]
             then
-                echo "you enterd an integer"
-            elif [[ "$curruntValue" =~ ^[a-zA-Z0-9]+$ ]] && [[ $coulmnDataType == "string" ]]
+            echo "values can not contain a comma..."
+            break;
+            elif  [[ "$curruntValue" =~ ^[0-9]+$ ]] && [[ $coulmnDataType == "number" ]]
             then
-                echo	 "you entered a string"
+                echo ""
+            elif [[ "$curruntValue" =~ [[:alnum:]] ]] && [[ $coulmnDataType == "string" ]]
+            then
+                echo ""
             else
                 echo "the value you entered does not match the coulmn datatype..."
                 insertFlag=0

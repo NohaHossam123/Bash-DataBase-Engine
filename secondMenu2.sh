@@ -1,17 +1,12 @@
 #!/bin/bash
-
 while true; do
-    select data in 'List tables' 'Create tables' 'insert' 'delete' 'select' 'exit'
+    select data in 'List tables' 'Create tables' 'insert' 'delete' 'exit'
     do
         case $data in
             'List tables')
-                if [ "$(ls -A $databases/$dataBaseName)" ]
-                then
-                    echo "you choosed list tables"
-                    ls -I "*.metadata" $databases/$dataBaseName
-                else
-                    echo "there aren't any tables to show......"
-                fi
+                echo "you choosed list tables"
+                tables=`ls -I "*.metadata" $databases/$dataBaseName`
+                echo "$tables"
                 break;
             ;;
             
@@ -26,13 +21,8 @@ while true; do
                 break;
             ;;
             'delete')
-                . ./deleteTable.sh
-                # deleteFromTable
-                break;
-            ;;
-            'select')
-                . ./selectTable.sh
-                #    selectMenu
+                . "deleteTable.sh"
+                deleteFromTable
                 break;
             ;;
             'exit')
@@ -45,3 +35,4 @@ while true; do
         esac
     done
 done
+

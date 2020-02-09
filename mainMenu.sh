@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 
 
 user=`whoami`
@@ -16,13 +16,13 @@ fi
 function listDB {
     if [ -d $databases ]
     then
-    #if [ -d $databases/$dataBaseName ]
-    if [ "$(ls -A $databases/$dataBaseName)" ]
-    then
-       ls $databases
-    else
-       echo "there aren't any databases to show..."
-    fi
+        #if [ -d $databases/$dataBaseName ]
+        if [ "$(ls -A $databases)" ]
+        then
+            ls $databases
+        else
+            echo "there aren't any databases to show..."
+        fi
     else
         echo "you don't have any file for databases!"
     fi
@@ -30,56 +30,79 @@ function listDB {
 
 function connectToDataBase {
     echo "please choose a database to connect : "
-    read dataBaseName
-    if [ -z $dataBaseName ]
+    read -e dataBaseName
+    if [[ -z $dataBaseName ]]
     then
-      echo "you didn't choose any database....."
-    else
-    if [ -d $databases/$dataBaseName ]
+        echo "you must enter a databasename"
+    elif [ -d $databases/$dataBaseName ]
     then
         export dataBaseName
         export databases
         . ./secondMenu.sh
     else
-        echo "$dataBaseName  not found please try again..."
-    fi
+        echo "database not found please try again..."
     fi
 }
 
 function createDB {
     if [ -d $databases ]
     then
-       #cd $databases
-       read -p "enter name of database :" databaseName
-    if [ -d "$databases/$databaseName" ] &&  [ -z "$databases/$databaseName" ]
-    then
-       echo   "$databaseName is exist"
-    fi
+        read -e -p "enter name of database :" databaseName
         
-    if [  -z "$databaseName"  ]
-    then
-       echo "you must enter database name....."
-    elif [ -d "$databases/$databaseName" ]
-    then
-       echo "$databaseName already exists please try again..."
-    elif [[ "$databaseName" =~ ^[0-9]+$ ]] #|| [[ "$databaseName" =~ ^[0-9Z]+$ ]]
-    then
-       echo "sorry,name of database must to be string only.."
-    else
-       mkdir $databases/$databaseName
-    fi
+        if [[ $databaseName =~ ^[a-zA-Z0-9]+$ ]]
+        then
+            if [[ "$databaseName" =~ ^[0-9] ]] || [[ "$databaseName" =~ [,] ]]
+            then
+                echo "database Name must start with characters and does not contain a comma..."
+            elif [ -d "$databases/$databaseName" ] &&  [ -z "$databases/$databaseName" ]
+            then
+                echo   "$databaseName is exist"
+            else
+                if [  -z "$databaseName"  ]
+                then
+                    echo "you must enter database name!"
+                elif [ -d "$databases/$databaseName" ]
+                then
+                    echo "$databaseName already exists please try again..."
+                else
+                    mkdir $databases/$databaseName
+                fi
+            fi
+        else
+            echo "invalid database name"
+        fi
+        
+        
     else
         echo "you didn't in the right path!"
     fi
-    pwd
-    #cd ..
 }
 
-
+function dropDatabase {
+    if [ -d $databases ]
+    then
+        cd $databases
+        echo "enter the database name : "
+        read -e databaseName
+        if [[ -z $databaseName ]]
+        then
+            echo "you must enter a database name"
+        elif [ -d $databaseName ]
+        then
+            rm -r $databaseName
+            echo "database $databaseName deleted..."
+            cd -
+        else
+            echo "database does not exist..."
+        fi
+    else
+        echo "you didn't in the right path!"
+    fi
+}
 
 while (true)
 do
-    select data in 'List database' 'Create database' 'Connect database' 'Exit'
+    select data in 'List database' 'Create database' 'Connect database' 'drop database' 'Exit'
     do
         case $data in
             'List database')
@@ -91,14 +114,20 @@ do
                 break
             ;;
             'Connect database')
-                #pwd
                 connectToDataBase
-                
+                break
+            ;;
+            'drop database')
+                dropDatabase
                 break
             ;;
             
             'Exit')
                 break 2
+            ;;
+            *)
+                echo "unknown opration choosed..."
+                break;
             ;;
         esac
     done
